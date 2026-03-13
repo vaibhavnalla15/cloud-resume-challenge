@@ -28,7 +28,7 @@ The frontend is built using **HTML, CSS, and JavaScript**, along with additional
   </a>
   &nbsp;
   <a href="https://github.com/" target="_blank" rel="noreferrer">
-    <img src="https://raw.githubusercontent.com/devicons/devicon/master/icons/github/github-original.svg" alt="github" width="40" height="40"/>
+    <img src="https://raw.githubusercontent.com/lobehub/lobe-icons/refs/heads/master/packages/static-png/dark/github.png" alt="github" width="40" height="40"/>
   </a>
   &nbsp;
   <a href="https://shorturl.at/vmjj6" target="_blank" rel="noreferrer">
