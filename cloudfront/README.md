@@ -58,5 +58,5 @@ The resume website is now served through **CloudFront's global CDN**, improving 
 
 ### Screenshot
 ```
-![CloudFront Distribution](./screenshots/cloudfront-distribution.png)
+![CloudFront Distribution](./screenshots/cloudfront-distribution.png) 
 ```
