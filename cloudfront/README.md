@@ -1,62 +1,68 @@
-## Task — CloudFront Distribution with Cache Invalidation
+## Task — Securing S3 with CloudFront Origin Access Control (OAC)
 
 ### Overview
-To improve performance and prepare the website for secure delivery, **Amazon CloudFront** was configured in front of the S3 bucket. CloudFront acts as a **Content Delivery Network (CDN)** that caches and distributes the static website globally through edge locations, reducing latency and improving load times.
+After verifying the website using the public S3 static hosting endpoint, the architecture was improved for better security. The S3 bucket was made **private**, static website hosting was **disabled**, and **CloudFront Origin Access Control (OAC)** was configured so that only CloudFront can access the S3 bucket.
 
 ### Services Used
-- **Amazon CloudFront**
-- **Amazon S3**
+- Amazon S3  
+- Amazon CloudFront  
 
 ### Implementation
 
-1. **Created a CloudFront Distribution**
-   - Origin configured as the **S3 static website endpoint**.
-   - Viewer protocol policy set to **Redirect HTTP to HTTPS**.
-   - Default root object set to `index.html`.
+1. **Disabled S3 Public Access**
+   - Re-enabled **Block Public Access** on the S3 bucket.
+   - Removed public read access from the bucket.
 
-2. **Configured Cache Behavior**
-   - Allowed methods: `GET, HEAD`
-   - Compression enabled for faster delivery.
-   - Default caching settings used.
+2. **Disabled Static Website Hosting**
+   - Static website hosting was turned **off** since CloudFront will now directly access the S3 bucket.
 
-3. **Accessing the Website**
-   After deployment, CloudFront generated a **distribution domain name**.
+3. **Updated CloudFront Origin**
+   - Changed the origin from **S3 website endpoint** to the **S3 bucket endpoint**.
+   - Configured **Origin Access Control (OAC)** so CloudFront can securely fetch objects from S3.
 
-Example:
+4. **Updated Bucket Policy**
+   A bucket policy was attached to allow **only the CloudFront distribution** to access the bucket.
+
+```json
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "cloudfront.amazonaws.com"
+      },
+      "Action": "s3:GetObject",
+      "Resource": "arn:aws:s3:::YOUR_BUCKET_NAME/*",
+      "Condition": {
+        "StringEquals": {
+          "AWS:SourceArn": "arn:aws:cloudfront::ACCOUNT_ID:distribution/DISTRIBUTION_ID"
+        }
+      }
+    }
+  ]
+}
+```
+
+5. **Cache Invalidation**
+After modifying the origin configuration, a CloudFront invalidation was created to refresh cached objects.
 ```code
-https://dxxxxxxxxxxxx.cloudfront.net
-```
-
-
-This domain now serves the resume website through CloudFront's global edge network.
-
-----
-
-### Cache Invalidation
-
-CloudFront caches files to improve performance. When updates are made to the website (such as changes to HTML, CSS, or JavaScript files), cached content must be invalidated so that users receive the latest version.
-
-An invalidation request was created for the following path:
-```
 /*
 ```
-
-
-This clears all cached objects in the distribution and forces CloudFront to fetch the updated files from the origin (S3).
+---
 
 ### Architecture Role
-CloudFront sits **in front of the S3 bucket** and acts as the content delivery layer.
 
-Benefits:
-- Global CDN performance
-- Reduced latency
-- HTTPS support
-- Better security by hiding direct S3 access in later steps
+CloudFront now securely retrieves content from a private S3 bucket using Origin Access Control (OAC). This prevents direct public access to the S3 bucket while still allowing the website to be served through CloudFront.
 
 ### Result
-The resume website is now served through **CloudFront's global CDN**, improving performance and preparing the architecture for secure access and custom domain integration.
 
-### Screenshot
+- S3 bucket is fully private
+- Static website hosting disabled
+- CloudFront securely serves content using OAC
+- Users access the website only through the CloudFront distribution URL
+
+Example:
 ```
-![CloudFront Distribution](./screenshots/cloudfront-distribution.png) 
+https://dxxxxxxxxxxxx.cloudfront.net
 ```
