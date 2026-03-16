@@ -84,9 +84,24 @@
           <p class="mb-5">Aspiring Cloud Engineer with hands-on exposure to AWS and cloud-native tools, actively building real-world projects. AWS Solutions Architect Associate certified, with experience in serverless architectures, Docker containerization, Infrastructure as Code (Terraform), and CI/CD pipelines. Highly motivated, quick to learn,
           and focused on developing production-ready cloud engineering skills.</p>
           <div class="visitor-card">
-          <span class="visitor-label">Visitors</span>
+          <span class="visitor-label">Visitors:- </span>
           <span id="visitor-count">Loading...</span>
           </div>
+          <script>
+          
+          // Get visitor counter with js.
+          const API_URL = "https://jwlotd39jj.execute-api.us-east-1.amazonaws.com/visitor_count";
+
+          fetch(API_URL)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("visitor-count").innerText = data.count;
+            })
+            .catch(error => {
+                document.getElementById("visitor-count").innerText = "ERROR";
+            });
+
+          </script>
           <br><br><br>
           <ul class="list-inline list-social-icons mb-0">
           <!-- Linkdin & Github link -->
