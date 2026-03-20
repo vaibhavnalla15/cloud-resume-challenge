@@ -9,9 +9,7 @@ It follows a **secure, scalable, and serverless design**, integrating frontend h
 
 ## 🧱 Architecture Diagram
 
-> (Replace below image after creating in draw.io)
-
-![Architecture](./assets/architecture.svg)
+![Architecture](./assets/Cloud-Resume-Challenge.png)
 
 ### 🔥 Architecture Flow
 
