@@ -24,3 +24,28 @@ resource "aws_s3_bucket_website_configuration" "resume" {
   }
 }
 
+# Add objects to S3 bucket.
+
+resource "aws_s3_object" "frontend_files" {
+  for_each = fileset("${var.source_path}", "**")
+
+  bucket = aws_s3_bucket.resume.id
+  key    = each.value
+  source = "${var.source_path}/${each.value}"
+
+  etag = filemd5("${var.source_path}/${each.value}")
+
+  content_type = lookup(
+  {
+    html = "text/html"
+    css  = "text/css"
+    js   = "application/javascript"
+    png  = "image/png"
+    jpg  = "image/jpeg"
+    jpeg = "image/jpeg"
+    svg  = "image/svg+xml"
+  },
+  split(".", each.value)[length(split(".", each.value)) - 1],
+  "application/octet-stream"
+  )
+}

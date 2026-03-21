@@ -1,11 +1,11 @@
 output "bucket_id" {
-  value = aws_s3_bucket.resume_bucket.id
+  value = aws_s3_bucket.resume.id
 }
 
 output "bucket_arn" {
-  value = aws_s3_bucket.resume_bucket.arn
+  value = aws_s3_bucket.resume.arn
 }
 
 output "bucket_regional_domain_name" {
-  value = aws_s3_bucket.resume_bucket.bucket_regional_domain_name
+  value = aws_s3_bucket.resume.bucket_regional_domain_name
 }
