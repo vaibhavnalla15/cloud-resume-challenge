@@ -118,7 +118,7 @@ Terraform was used to create and manage:
 
 ---
 
-## ⚡ Key Terraform Concepts Mastered
+## ⚡ Key Terraform Concepts 
 
 - Resource creation and management  
 - `variables.tf` and `terraform.tfvars` usage  
