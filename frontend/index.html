@@ -301,23 +301,22 @@
       <!-- Custom scripts for this template -->
       <script src="js/resume.min.js"></script>
       <!-- // Get visitor counter with js. -->
+      <script src="js/config.js"></script>
+
       <script>
-         document.addEventListener("DOMContentLoaded", function () {
-         
-         const API_URL = "https://jwlotd39jj.execute-api.us-east-1.amazonaws.com/visitor_count";
-         
-         fetch(API_URL)
+      document.addEventListener("DOMContentLoaded", function () {
+
+      fetch(API_URL)
          .then(response => response.json())
          .then(data => {
-         document.getElementById("visitor-count").textContent = data.count;
+            document.getElementById("visitor-count").textContent = data.count;
          })
          .catch(error => {
-         console.error("Visitor counter error:", error);
-         document.getElementById("visitor-count").textContent = "ERROR";
+            console.error("Visitor counter error:", error);
+            document.getElementById("visitor-count").textContent = "ERROR";
          });
-         
-         });
-         
+
+      });
       </script>
    </body>
 </html>
