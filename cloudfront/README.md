@@ -49,6 +49,12 @@ After modifying the origin configuration, a CloudFront invalidation was created 
 ```code
 /*
 ```
+
+```
+aws cloudfront create-invalidation \
+  --distribution-id YOUR_DIST_ID \
+  --paths "/*"
+```
 ---
 
 ### Architecture Role
