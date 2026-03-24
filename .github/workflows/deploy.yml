@@ -70,4 +70,7 @@ jobs:
 
       - name: Upload frontend to S3
         run: |
-          aws s3 sync ../frontend s3://$TF_VAR_BUCKET_NAME --delete  
+          aws s3 sync ../frontend s3://$TF_VAR_bucket_name --delete
+      
+      - name: Debug bucket
+        run: echo $TF_VAR_bucket_name    
