@@ -1,4 +1,4 @@
-name: Terraform CI
+name: CI/CD Pipeline - Terraform + Frontend Deployment
 
 on:
   push:
