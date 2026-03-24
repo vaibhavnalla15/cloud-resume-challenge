@@ -75,7 +75,7 @@ jobs:
       # ✅ Upload frontend
       - name: Upload frontend to S3
         run: |
-          aws s3 sync ../frontend s3://$BUCKET_NAME --delete
+          aws s3 sync ../frontend s3://$BUCKET_NAME/frontend --delete
 
       # ✅ CloudFront Invalidation
       - name: Invalidate CloudFront Cache
