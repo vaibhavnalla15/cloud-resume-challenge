@@ -1,4 +1,4 @@
-name: Terraform CI 
+name: Terraform CI
 
 on:
   push:
@@ -11,8 +11,15 @@ concurrency:
 
 jobs:
   terraform:
-    name: Terraform Plan
+    name: Terraform Deploy
     runs-on: ubuntu-latest
+
+    # ✅ GLOBAL ENV (Fixes your issue)
+    env:
+      TF_VAR_bucket_name: ${{ secrets.TF_VAR_bucket_name }}
+      TF_VAR_region: ${{ secrets.TF_VAR_region }}
+      TF_VAR_lambda_role_arn: ${{ secrets.TF_VAR_lambda_role_arn }}
+      BUCKET_NAME: ${{ secrets.TF_VAR_bucket_name }}
 
     defaults:
       run:
@@ -43,35 +50,29 @@ jobs:
 
       - name: Terraform Plan
         run: terraform plan -out=tfplan
-        env:
-            TF_VAR_bucket_name: ${{ secrets.TF_VAR_bucket_name }}
-            TF_VAR_region: ${{ secrets.TF_VAR_region }}
-            TF_VAR_lambda_role_arn: ${{ secrets.TF_VAR_lambda_role_arn }}
 
       - name: Terraform Apply
         run: terraform apply -auto-approve tfplan
-        env:
-            TF_VAR_bucket_name: ${{ secrets.TF_VAR_bucket_name }}
-            TF_VAR_region: ${{ secrets.TF_VAR_region }}
-            TF_VAR_lambda_role_arn: ${{ secrets.TF_VAR_lambda_role_arn }}
-            BUCKET_NAME: ${{ secrets.TF_VAR_bucket_name }}
-      
+
+      # ✅ Get API URL
       - name: Get API URL from Terraform
-        id: get_api
         run: |
           API_URL=$(terraform output -raw api_url)
-          echo "API_URL=$API_URL" >> $GITHUB_ENV      
-      
+          echo "API_URL=$API_URL" >> $GITHUB_ENV
+
+      # ✅ Inject into frontend
       - name: Inject API URL into config.js
         run: |
-          sed -i "s|PLACEHOLDER|$API_URL|g" ../frontend/js/config.js    
+          sed -i "s|PLACEHOLDER|$API_URL|g" ../frontend/js/config.js
 
       - name: Show config.js
-        run: cat ../frontend/js/config.js    
+        run: cat ../frontend/js/config.js
 
+      # ✅ Debug (optional, remove later)
+      - name: Debug bucket
+        run: echo "Bucket = $BUCKET_NAME"
+
+      # ✅ Upload frontend
       - name: Upload frontend to S3
         run: |
           aws s3 sync ../frontend s3://$BUCKET_NAME --delete
-      
-      - name: Debug bucket
-        run: echo $TF_VAR_bucket_name    
