@@ -68,7 +68,7 @@ jobs:
       - name: Inject API URL into config.js
         run: |
           echo "Injecting API URL: $API_URL"
-          sed -i "s|PLACEHOLDER|$API_URL|g" ../frontend/js/config.js
+          sed -i "s|PLACEHOLDER|${API_URL}/visitor|g" $GITHUB_WORKSPACE/frontend/js/config.js
       
       # ✅ Verify After Injection    
       - name: Show config.js
