@@ -5,6 +5,10 @@ on:
     branches:
       - test
 
+concurrency:
+  group: terraform
+  cancel-in-progress: true
+
 jobs:
   terraform:
     name: Terraform Plan
