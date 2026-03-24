@@ -60,3 +60,14 @@ jobs:
         run: |
           API_URL=$(terraform output -raw api_url)
           echo "API_URL=$API_URL" >> $GITHUB_ENV      
+      
+      - name: Inject API URL into config.js
+        run: |
+          sed -i "s|PLACEHOLDER|$API_URL|g" ../frontend/js/config.js    
+
+      - name: Show config.js
+        run: cat ../frontend/js/config.js    
+
+      - name: Upload frontend to S3
+        run: |
+          aws s3 sync ../frontend s3://$TF_VAR_bucket_name --delete  
