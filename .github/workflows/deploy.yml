@@ -60,11 +60,17 @@ jobs:
           API_URL=$(terraform output -raw api_url)
           echo "API_URL=$API_URL" >> $GITHUB_ENV
 
+      # ✅ Debug API URL
+      - name: Debug API URL
+        run: echo "API_URL=$API_URL"    
+
       # ✅ Inject into frontend
       - name: Inject API URL into config.js
         run: |
+          echo "Injecting API URL: $API_URL"
           sed -i "s|PLACEHOLDER|$API_URL|g" ../frontend/js/config.js
-
+      
+      # ✅ Verify After Injection    
       - name: Show config.js
         run: cat ../frontend/js/config.js
 
