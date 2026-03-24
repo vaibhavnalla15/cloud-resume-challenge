@@ -76,3 +76,12 @@ jobs:
       - name: Upload frontend to S3
         run: |
           aws s3 sync ../frontend s3://$BUCKET_NAME --delete
+
+      # ✅ CloudFront Invalidation
+      - name: Invalidate CloudFront Cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id $CLOUDFRONT_DISTRIBUTION_ID \
+            --paths "/*"
+        env:
+          CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}    
