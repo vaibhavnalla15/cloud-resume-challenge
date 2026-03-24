@@ -95,6 +95,7 @@ cloud-resume-challenge/
 │
 ├── README.md 
 └── .gitignore
+```
 ---
 
 ## 📚 Project Documentation
