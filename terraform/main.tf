@@ -165,14 +165,14 @@ resource "aws_dynamodb_table" "visitor_count" {
 resource "aws_lambda_function" "visitor_lambda" {
   function_name = "visitor-counter"
 
-  filename = "${path.module}/../backend/Lambda/function.zip"
+  filename = "${path.module}/../backend/lambda/function.zip"
   handler  = "lambda_function.lambda_handler"
   runtime  = "python3.12"
 
   # 👇 Replace with your existing role ARN
   role = var.lambda_role_arn
 
-  source_code_hash = filebase64sha256("${path.module}/../backend/Lambda/function.zip")
+  source_code_hash = filebase64sha256("${path.module}/../backend/lambda/function.zip")
 
   environment {
     variables = {
