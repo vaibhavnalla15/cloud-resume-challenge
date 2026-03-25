@@ -1,0 +1,93 @@
+name: CI/CD Pipeline - Terraform + Frontend Deployment
+
+on:
+  push:
+    branches:
+      - test
+
+concurrency:
+  group: terraform
+  cancel-in-progress: true
+
+jobs:
+  terraform:
+    name: Terraform Deploy
+    runs-on: ubuntu-latest
+
+    # ✅ GLOBAL ENV (Fixes your issue)
+    env:
+      TF_VAR_bucket_name: ${{ secrets.TF_VAR_bucket_name }}
+      TF_VAR_region: ${{ secrets.TF_VAR_region }}
+      TF_VAR_lambda_role_arn: ${{ secrets.TF_VAR_lambda_role_arn }}
+      BUCKET_NAME: ${{ secrets.TF_VAR_bucket_name }}
+
+    defaults:
+      run:
+        working-directory: terraform
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Format Check
+        run: terraform fmt -check
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+
+      - name: Terraform Apply
+        run: terraform apply -auto-approve tfplan
+
+      # ✅ Get API URL
+      - name: Get API URL from Terraform
+        run: |
+          API_URL=$(terraform output -raw api_url)
+          echo "API_URL=$API_URL" >> $GITHUB_ENV
+
+      # ✅ Debug API URL
+      - name: Debug API URL
+        run: echo "API_URL=$API_URL"    
+
+      # ✅ Inject into frontend
+      - name: Inject API URL into config.js
+        run: |
+          echo "Injecting API URL: $API_URL"
+          sed -i "s|PLACEHOLDER|${API_URL}|g" ../frontend/js/config.js
+      
+      # ✅ Verify After Injection    
+      - name: Show config.js
+        run: cat ../frontend/js/config.js
+
+      # ✅ Debug (optional, remove later)
+      - name: Debug bucket
+        run: echo "Bucket = $BUCKET_NAME"
+
+      # ✅ Upload frontend
+      - name: Upload frontend to S3
+        run: |
+          aws s3 sync ../frontend s3://$BUCKET_NAME/frontend --delete
+
+      # ✅ CloudFront Invalidation
+      - name: Invalidate CloudFront Cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id $CLOUDFRONT_DISTRIBUTION_ID \
+            --paths "/*"
+        env:
+          CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}    

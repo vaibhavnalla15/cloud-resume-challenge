@@ -1,26 +1,41 @@
 import json
 import boto3
+import os
 
-# Initialize outside to stay fast
-table = boto3.resource('dynamodb').Table('visitor-counter')
+# Initialize DynamoDB
+dynamodb = boto3.resource('dynamodb')
+
+# ✅ Use environment variable (Terraform-controlled)
+table_name = os.environ.get('TABLE_NAME')
+table = dynamodb.Table(table_name)
 
 def lambda_handler(event, context):
-    # 'ADD' is the simplest way to increment a number in DynamoDB
-    response = table.update_item(
-        Key={'id': 'resume'},
-        UpdateExpression='ADD visitor_count :inc',
-        ExpressionAttributeValues={':inc': 1},
-        ReturnValues='UPDATED_NEW'
-    )
+    try:
+        response = table.update_item(
+            Key={'id': 'visitor_count'},  # consistent key
+            UpdateExpression='ADD #count :inc',
+            ExpressionAttributeNames={
+                '#count': 'visitor_count'
+            },
+            ExpressionAttributeValues={
+                ':inc': 1
+            },
+            ReturnValues='UPDATED_NEW'
+        )
 
-    # Get the new value from the response
-    new_count = int(response['Attributes']['visitor_count'])
+        new_count = int(response['Attributes']['visitor_count'])
 
-    return {
-        'statusCode': 200,
-        'headers': {
-            'Access-Control-Allow-Origin': '*', # Solves CORS errors for your website
-            'Content-Type': 'application/json'
-        },
-        'body': json.dumps({'count': new_count})
-    }
+        return {
+            'statusCode': 200,
+            'headers': {
+                'Access-Control-Allow-Origin': '*',
+                'Content-Type': 'application/json'
+            },
+            'body': json.dumps({'count': new_count})
+        }
+
+    except Exception as e:
+        return {
+            'statusCode': 500,
+            'body': str(e)
+        }

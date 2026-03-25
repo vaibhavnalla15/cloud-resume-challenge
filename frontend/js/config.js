@@ -1,1 +1,1 @@
-const API_URL = "https://ky9y2jru78.execute-api.us-east-1.amazonaws.com/visitor";  // Update this whenever there is change in API URL.
+const API_URL = "PLACEHOLDER";  // We will replace PLACEHOLDER dynamically.

@@ -53,6 +53,50 @@ DynamoDB (Visitor Counter)
 | Domain       | GoDaddy (`betterway.cloud`) |
 
 ---
+## 📁 Project Structure
+
+```text
+cloud-resume-challenge/
+│
+├── assets/
+│   ├── Cloud-Resume-Challenge.png
+│   └── Resume.png
+│
+├── backend/
+│   ├── API Gateway/
+│   │   └── README.md 
+│   ├── DynamoDB/
+│   │   └── README.md 
+│   └── lambda/
+│       ├── function.zip
+│       ├── lambda_function.py
+│       └── README.md 
+│
+├── cloudfront/
+│   └── README.md 
+│
+├── Route53/
+│   └── README.md 
+│
+├── frontend/
+│   ├── css/
+│   ├── img/
+│   ├── js/
+│   ├── vendor/
+│   ├── index.html
+│   └── README.md 
+│
+├── Terraform/
+│   ├── main.tf
+│   ├── output.tf
+│   ├── variables.tf
+│   ├── provider.tf
+│   └── policy.json
+│
+├── README.md 
+└── .gitignore
+```
+---
 
 ## 📚 Project Documentation
 
