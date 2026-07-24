@@ -12,7 +12,7 @@ Designed and automated a serverless cloud architecture using **Terraform, integr
 
 ## 🧱 Architecture Diagram
 
-![cloud-resume-challenge](./assets/cloud-resume-challenge.png)
+![cloud-resume-challenge](/assets/Cloud-Resume-Challenge.png)
 
 ---
 
